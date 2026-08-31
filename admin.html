@@ -1,1 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>LVN Admin Panel</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="login-container" id="adminLogin">
+
+    <div class="login-box">
+
+      <div class="logo">LVN</div>
+
+      <h1>Admin Login</h1>
+
+      <p class="subtitle">License Management</p>
+
+      <input
+        type="text"
+        id="adminUsername"
+        placeholder="Admin Username"
+      >
+
+      <input
+        type="password"
+        id="adminPassword"
+        placeholder="Admin Password"
+      >
+
+      <button class="login-btn admin-btn" onclick="adminLogin()">
+        Login
+      </button>
+
+      <p id="adminError"></p>
+
+    </div>
+
+  </div>
+
+
+  <div id="adminPanel" style="display:none;">
+
+    <header class="dashboard-header">
+
+      <div>
+        <h2>LVN Admin Panel</h2>
+        <p>License Control Center</p>
+      </div>
+
+      <button onclick="logout()" class="logout-btn">
+        Logout
+      </button>
+
+    </header>
+
+
+    <main class="dashboard">
+
+      <div class="dashboard-grid">
+
+        <button onclick="showSection('activation')" class="dashboard-card">
+          <span>⚡</span>
+          <h3>License Activation</h3>
+          <p>Activate a user's license</p>
+        </button>
+
+
+        <button onclick="showSection('deactivation')" class="dashboard-card">
+          <span>🚫</span>
+          <h3>License Deactivation</h3>
+          <p>Deactivate a user's license</p>
+        </button>
+
+
+        <button onclick="showSection('codes')" class="dashboard-card">
+          <span>🔑</span>
+          <h3>W Code Generator</h3>
+          <p>Generate license codes</p>
+        </button>
+
+
+        <button onclick="showSection('users')" class="dashboard-card">
+          <span>👥</span>
+          <h3>View Users</h3>
+          <p>View registered users</p>
+        </button>
+
+      </div>
+
+
+      <!-- LICENSE ACTIVATION -->
+
+      <section id="activation" class="panel-section">
+
+        <h2>License Activation</h2>
+
+        <input
+          type="text"
+          id="activationUserId"
+          placeholder="Enter 10-digit User ID"
+          maxlength="10"
+        >
+
+        <input
+          type="text"
+          id="activationCode"
+          placeholder="Enter License Code"
+        >
+
+        <select id="duration">
+
+          <option value="1">1 Hour</option>
+          <option value="24">24 Hours</option>
+          <option value="168">7 Days</option>
+          <option value="720">30 Days</option>
+
+        </select>
+
+        <button onclick="activateLicense()" class="action-btn">
+          Activate License
+        </button>
+
+        <p id="activationMessage"></p>
+
+      </section>
+
+
+      <!-- LICENSE DEACTIVATION -->
+
+      <section id="deactivation" class="panel-section">
+
+        <h2>License Deactivation</h2>
+
+        <input
+          type="text"
+          id="deactivationUserId"
+          placeholder="Enter 10-digit User ID"
+          maxlength="10"
+        >
+
+        <button onclick="deactivateLicense()" class="danger-btn">
+          Deactivate License
+        </button>
+
+        <p id="deactivationMessage"></p>
+
+      </section>
+
+
+      <!-- W CODE GENERATOR -->
+
+      <section id="codes" class="panel-section">
+
+        <h2>W Code Generator</h2>
+
+        <p>Generate a new license code.</p>
+
+        <button onclick="generateCode()" class="action-btn">
+          Generate W Code
+        </button>
+
+        <div id="generatedCode" class="generated-code">
+          Your code will appear here
+        </div>
+
+      </section>
+
+
+      <!-- USERS -->
+
+      <section id="users" class="panel-section">
+
+        <h2>Users List</h2>
+
+        <div id="usersList">
+          No users found.
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+<script>
+
+const ADMIN_USERNAME = "koushik123";
+const ADMIN_PASSWORD = "lavankoushik";
+
+
+function adminLogin() {
+
+  const username =
+    document.getElementById("adminUsername").value;
+
+  const password =
+    document.getElementById("adminPassword").value;
+
+
+  if (
+    username === ADMIN_USERNAME &&
+    password === ADMIN_PASSWORD
+  ) {
+
+    document.getElementById("adminLogin").style.display = "none";
+
+    document.getElementById("adminPanel").style.display = "block";
+
+    loadUsers();
+
+  } else {
+
+    document.getElementById("adminError").innerText =
+      "Invalid admin username or password.";
+
+  }
+
+}
+
+
+function logout() {
+
+  location.reload();
+
+}
+
+
+function showSection(section) {
+
+  document.querySelectorAll(".panel-section")
+    .forEach(x => x.style.display = "none");
+
+  document.getElementById(section)
+    .style.display = "block";
+
+}
+
+
+function generateCode() {
+
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+  let code = "";
+
+  for (let i = 0; i < 16; i++) {
+
+    code += chars.charAt(
+      Math.floor(Math.random() * chars.length)
+    );
+
+  }
+
+  code =
+    code.substring(0,4) + "-" +
+    code.substring(4,8) + "-" +
+    code.substring(8,12) + "-" +
+    code.substring(12,16);
+
+
+  document.getElementById("generatedCode")
+    .innerText = code;
+
+}
+
+
+function activateLicense() {
+
+  const id =
+    document.getElementById("activationUserId").value;
+
+  const code =
+    document.getElementById("activationCode").value;
+
+  const duration =
+    document.getElementById("duration").value;
+
+
+  if (id.length !== 10) {
+
+    document.getElementById("activationMessage")
+      .innerText = "Enter a valid 10-digit User ID.";
+
+    return;
+
+  }
+
+
+  const licenseData = {
+
+    userId: id,
+
+    code: code,
+
+    duration: duration,
+
+    activated: true,
+
+    activatedAt: Date.now(),
+
+    expiresAt:
+      Date.now() + Number(duration) * 60 * 60 * 1000
+
+  };
+
+
+  localStorage.setItem(
+    "license_" + id,
+    JSON.stringify(licenseData)
+  );
+
+
+  document.getElementById("activationMessage")
+    .innerText = "License activated successfully.";
+
+  loadUsers();
+
+}
+
+
+function deactivateLicense() {
+
+  const id =
+    document.getElementById("deactivationUserId").value;
+
+
+  localStorage.removeItem(
+    "license_" + id
+  );
+
+
+  document.getElementById("deactivationMessage")
+    .innerText = "License deactivated.";
+
+  loadUsers();
+
+}
+
+
+function loadUsers() {
+
+  let users = [];
+
+  for (let i = 0; i < localStorage.length; i++) {
+
+    const key = localStorage.key(i);
+
+    if (key.startsWith("license_")) {
+
+      try {
+
+        const data =
+          JSON.parse(localStorage.getItem(key));
+
+        users.push(data);
+
+      } catch (e) {}
+
+    }
+
+  }
+
+
+  if (users.length === 0) {
+
+    document.getElementById("usersList")
+      .innerHTML = "No users found.";
+
+    return;
+
+  }
+
+
+  document.getElementById("usersList").innerHTML =
+    users.map(user => `
+
+      <div class="user-card">
+
+        <b>User ID:</b> ${user.userId}
+
+        <br>
+
+        <b>Status:</b>
+        ${user.activated ? "🟢 Active" : "🔴 Inactive"}
+
+        <br>
+
+        <b>Expires:</b>
+        ${new Date(user.expiresAt).toLocaleString()}
+
+      </div>
+
+    `).join("");
+
+}
+
+</script>
+
+</body>
+</html>
