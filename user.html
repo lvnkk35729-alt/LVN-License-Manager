@@ -1,43 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>LVN User Panel</title>
-  <link rel="stylesheet" href="style.css">
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 </head>
+
 
 <body>
 
+
   <!-- USER LOGIN -->
-  <div class="login-container" id="userLogin">
+
+  <div
+    class="login-container"
+    id="userLogin"
+  >
 
     <div class="login-box">
 
-      <div class="logo">LVN</div>
+      <div class="logo">
+        LVN
+      </div>
 
-      <h1>User Login</h1>
-      <p class="subtitle">License User Panel</p>
+      <h1>
+        User Login
+      </h1>
+
+      <p class="subtitle">
+        License User Panel
+      </p>
+
 
       <input
         type="email"
         id="email"
         placeholder="Email"
-        autocomplete="email"
       >
+
 
       <input
         type="password"
         id="password"
         placeholder="Password"
-        autocomplete="current-password"
       >
 
+
       <button
+        type="button"
         class="login-btn user-btn"
-        id="loginButton">
+        id="loginButton"
+      >
         Login
       </button>
+
 
       <p id="loginMessage"></p>
 
@@ -46,26 +75,44 @@
   </div>
 
 
+
   <!-- USER PANEL -->
-  <div id="userPanel" style="display:none;">
+
+  <div
+    id="userPanel"
+    style="display:none;"
+  >
+
 
     <header class="dashboard-header">
 
       <div>
-        <h2>LVN User Panel</h2>
-        <p>License Information</p>
+
+        <h2>
+          LVN User Panel
+        </h2>
+
+        <p>
+          License Information
+        </p>
+
       </div>
 
+
       <button
+        type="button"
         id="logoutButton"
-        class="logout-btn">
+        class="logout-btn"
+      >
         Logout
       </button>
 
     </header>
 
 
+
     <main class="dashboard">
+
 
       <div class="license-card">
 
@@ -73,9 +120,11 @@
           🔐
         </div>
 
+
         <h1 id="licenseStatus">
           🔴 LICENSE DEACTIVATED
         </h1>
+
 
         <p id="statusText">
           Your license is currently inactive.
@@ -84,41 +133,77 @@
       </div>
 
 
+
       <div class="info-grid">
 
-        <div class="info-card">
-          <h3>User ID</h3>
-          <p id="userId">—</p>
-        </div>
 
         <div class="info-card">
-          <h3>License Code</h3>
-          <p id="licenseCode">—</p>
+
+          <h3>
+            User ID
+          </h3>
+
+          <p id="userId">
+            —
+          </p>
+
         </div>
 
-        <div class="info-card">
-          <h3>License Duration</h3>
-          <p id="licenseDuration">—</p>
-        </div>
+
 
         <div class="info-card">
-          <h3>Expiry</h3>
-          <p id="expiry">—</p>
+
+          <h3>
+            License Code
+          </h3>
+
+          <p id="licenseCode">
+            —
+          </p>
+
         </div>
+
+
+
+        <div class="info-card">
+
+          <h3>
+            License Duration
+          </h3>
+
+          <p id="licenseDuration">
+            —
+          </p>
+
+        </div>
+
+
+
+        <div class="info-card">
+
+          <h3>
+            Expiry
+          </h3>
+
+          <p id="expiry">
+            —
+          </p>
+
+        </div>
+
 
       </div>
 
+
     </main>
 
-  </div>
 
+  </div> <!-- FIREBASE -->
 
-  <!-- FIREBASE -->
   <script type="module">
 
-    import {
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
     import {
       getAuth,
@@ -135,11 +220,10 @@
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
-    // Firebase configuration
-
     const firebaseConfig = {
 
-      apiKey: "AIzaSyBxOeP1or0k5z3Itk7weYZfcY4hG84-wB4",
+      apiKey:
+        "AIzaSyBxOeP1or0k5z3Itk7weYZfcY4hG84-wB4",
 
       authDomain:
         "lvn-licence-manager-1f8fb.firebaseapp.com",
@@ -155,17 +239,21 @@
 
       appId:
         "1:1045739350275:web:087bf256bf7c6ee6e0a136"
+
     };
 
 
-    const app = initializeApp(firebaseConfig);
+    const app =
+      initializeApp(firebaseConfig);
 
-    const auth = getAuth(app);
+    const auth =
+      getAuth(app);
 
-    const db = getFirestore(app);
+    const db =
+      getFirestore(app);
 
 
-    const userLogin =
+    const loginScreen =
       document.getElementById("userLogin");
 
     const userPanel =
@@ -175,16 +263,13 @@
       document.getElementById("loginMessage");
 
 
-    // LOGIN
-
     document
       .getElementById("loginButton")
       .addEventListener("click", async () => {
 
         const email =
           document.getElementById("email")
-            .value
-            .trim();
+            .value.trim();
 
         const password =
           document.getElementById("password")
@@ -197,6 +282,7 @@
             "Enter email and password.";
 
           return;
+
         }
 
 
@@ -226,25 +312,24 @@
       });
 
 
-    // AUTH STATE
-
     onAuthStateChanged(
       auth,
       async (user) => {
 
         if (!user) {
 
-          userLogin.style.display =
+          loginScreen.style.display =
             "block";
 
           userPanel.style.display =
             "none";
 
           return;
+
         }
 
 
-        userLogin.style.display =
+        loginScreen.style.display =
           "none";
 
         userPanel.style.display =
@@ -256,8 +341,6 @@
       }
     );
 
-
-    // LOAD / CREATE USER
 
     async function loadUser(uid) {
 
@@ -271,7 +354,7 @@
       if (!userSnap.exists()) {
 
         const generatedId =
-          generate10DigitId();
+          generateUserId();
 
 
         await setDoc(
@@ -282,17 +365,23 @@
 
             userId: generatedId,
 
-            email: auth.currentUser.email,
+            email:
+              auth.currentUser.email,
 
-            licenseActive: false,
+            licenseActive:
+              false,
 
-            licenseCode: "",
+            licenseCode:
+              "",
 
-            duration: 0,
+            duration:
+              0,
 
-            expiresAt: null,
+            expiresAt:
+              null,
 
-            createdAt: new Date()
+            createdAt:
+              Date.now()
 
           }
         );
@@ -307,6 +396,7 @@
         );
 
         return;
+
       }
 
 
@@ -329,59 +419,3 @@
       );
 
     }
-
-
-    // DISPLAY USER DATA
-
-    function displayUser(
-      id,
-      active,
-      code,
-      duration,
-      expiresAt
-    ) {
-
-      document.getElementById("userId")
-        .innerText = id;
-
-
-      if (!active) {
-
-        document.getElementById(
-          "licenseStatus"
-        ).innerText =
-          "🔴 LICENSE DEACTIVATED";
-
-        document.getElementById(
-          "statusText"
-        ).innerText =
-          "Your license is currently inactive.";
-
-        document.getElementById(
-          "licenseCode"
-        ).innerText = "—";
-
-        document.getElementById(
-          "licenseDuration"
-        ).innerText = "—";
-
-        document.getElementById(
-          "expiry"
-        ).innerText = "—";
-
-        return;
-      }
-
-
-      if (
-        expiresAt &&
-        Date.now() > expiresAt
-      ) {
-
-        document.getElementById(
-          "licenseStatus"
-        ).innerText =
-          "🔴 LICENSE EXPIRED";
-
-        document.getElementById(
-          "status
