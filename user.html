@@ -1,1 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LVN User Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+  <!-- USER LOGIN -->
+
+  <div class="login-container" id="userLogin">
+
+    <div class="login-box">
+
+      <div class="logo">LVN</div>
+
+      <h1>User Login</h1>
+
+      <p class="subtitle">License User Panel</p>
+
+      <input
+        type="text"
+        id="username"
+        placeholder="Username"
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+      >
+
+      <button
+        class="login-btn user-btn"
+        onclick="userLogin()">
+        Login
+      </button>
+
+      <p id="loginMessage"></p>
+
+    </div>
+
+  </div>
+
+
+  <!-- USER PANEL -->
+
+  <div id="userPanel" style="display:none;">
+
+    <header class="dashboard-header">
+
+      <div>
+        <h2>LVN User Panel</h2>
+        <p>License Information</p>
+      </div>
+
+      <button
+        onclick="logout()"
+        class="logout-btn">
+        Logout
+      </button>
+
+    </header>
+
+
+    <main class="dashboard">
+
+      <div class="license-card">
+
+        <div class="license-icon">
+          🔐
+        </div>
+
+        <h1 id="licenseStatus">
+          🔴 LICENSE DEACTIVATED
+        </h1>
+
+        <p id="statusText">
+          Your license is currently inactive.
+        </p>
+
+      </div>
+
+
+      <div class="info-grid">
+
+        <div class="info-card">
+
+          <h3>User ID</h3>
+
+          <p id="userId">
+            —
+          </p>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <h3>License Code</h3>
+
+          <p id="licenseCode">
+            —
+          </p>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <h3>License Duration</h3>
+
+          <p id="licenseDuration">
+            —
+          </p>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <h3>Expiry</h3>
+
+          <p id="expiry">
+            —
+          </p>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+<script>
+
+const USER_USERNAME = "lavan koushik 1";
+const USER_PASSWORD = "lavankoushik 34";
+
+let userId = null;
+
+
+function userLogin() {
+
+  const username =
+    document.getElementById("username").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+
+  if (
+    username === USER_USERNAME &&
+    password === USER_PASSWORD
+  ) {
+
+    /*
+      Demo user ID.
+      Later this will come from the online database.
+    */
+
+    userId = localStorage.getItem("myUserId");
+
+    if (!userId) {
+
+      userId = generateUserId();
+
+      localStorage.setItem(
+        "myUserId",
+        userId
+      );
+
+    }
+
+
+    document.getElementById("userLogin")
+      .style.display = "none";
+
+    document.getElementById("userPanel")
+      .style.display = "block";
+
+
+    document.getElementById("userId")
+      .innerText = userId;
+
+
+    updateLicense();
+
+  } else {
+
+    document.getElementById("loginMessage")
+      .innerText =
+      "Invalid username or password.";
+
+  }
+
+}
+
+
+function generateUserId() {
+
+  let id = "";
+
+  for (let i = 0; i < 10; i++) {
+
+    id += Math.floor(
+      Math.random() * 10
+    );
+
+  }
+
+  return id;
+
+}
+
+
+function updateLicense() {
+
+  const data =
+    localStorage.getItem(
+      "license_" + userId
+    );
+
+
+  if (!data) {
+
+    document.getElementById("licenseStatus")
+      .innerText =
+      "🔴 LICENSE DEACTIVATED";
+
+    document.getElementById("statusText")
+      .innerText =
+      "Your license is currently inactive.";
+
+    document.getElementById("licenseCode")
+      .innerText = "—";
+
+    document.getElementById("licenseDuration")
+      .innerText = "—";
+
+    document.getElementById("expiry")
+      .innerText = "—";
+
+    return;
+
+  }
+
+
+  const license =
+    JSON.parse(data);
+
+
+  if (
+    license.expiresAt &&
+    Date.now() > license.expiresAt
+  ) {
+
+    document.getElementById("licenseStatus")
+      .innerText =
+      "🔴 LICENSE EXPIRED";
+
+    document.getElementById("statusText")
+      .innerText =
+      "Your license has expired.";
+
+    return;
+
+  }
+
+
+  document.getElementById("licenseStatus")
+    .innerText =
+    "🟢 LICENSE ACTIVE";
+
+
+  document.getElementById("statusText")
+    .innerText =
+    "Your license is active.";
+
+
+  document.getElementById("licenseCode")
+    .innerText =
+    license.code || "—";
+
+
+  document.getElementById("licenseDuration")
+    .innerText =
+    license.duration + " Hours";
+
+
+  document.getElementById("expiry")
+    .innerText =
+    new Date(
+      license.expiresAt
+    ).toLocaleString();
+
+}
+
+
+function logout() {
+
+  location.reload();
+
+}
+
+
+/*
+  Check license every 10 seconds.
+*/
+
+setInterval(() => {
+
+  if (
+    document.getElementById("userPanel")
+      .style.display === "block"
+  ) {
+
+    updateLicense();
+
+  }
+
+}, 10000);
+
+</script>
+
+</body>
+</html>
